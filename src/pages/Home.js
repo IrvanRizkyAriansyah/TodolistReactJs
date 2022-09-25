@@ -6,10 +6,12 @@ import {DeleteFilled, EditFilled} from '@ant-design/icons';
 
 function Home() {
   const [toDo, setToDo] = useState([]);
+  const [task, setTask] = useState([]);
 
   function loadTasks() {
     axios.get("http://localhost:3001/tasks").then((res) => {
       setToDo(res.data.reverse());
+      setTask(res.data.reverse());
     });
   }
 
@@ -21,8 +23,16 @@ function Home() {
     axios.delete(`http://localhost:3001/tasks/${id}`).then(loadTasks());
   }
   
-  function deleteAllTask() {
-    axios.delete(`http://localhost:3001/tasks`).then(loadTasks());
+  function filterTodoTask() {
+    setToDo(task.filter(task => task.complete !== true))
+  }
+  
+  function filterDoneTask() {
+    setToDo(task.filter(task => task.complete === true))
+  }
+  
+  function filterAllTask() {
+    setToDo(task)
   }
 
   return (
@@ -45,13 +55,16 @@ function Home() {
       <h1 align="center">TodoList</h1>
       <Row justify="space-between">
       <Col span={7}>
-        <Button type="primary" style={{width: "100%"}}>All</Button>
+        <Button type="primary" style={{width: "100%"}}
+        onClick={()=>filterAllTask()}>All</Button>
       </Col>
       <Col span={7}>
-        <Button type="primary" style={{width: "100%"}}>Done</Button>
+        <Button type="primary" style={{width: "100%"}}
+        onClick={()=>filterDoneTask()}>Done</Button>
       </Col>
       <Col span={7}>
-        <Button type="primary" style={{width: "100%"}}>Todo</Button>
+        <Button type="primary" style={{width: "100%"}} 
+          onClick={()=>filterTodoTask()}>Todo</Button>
       </Col>
       </Row>
       
@@ -59,7 +72,7 @@ function Home() {
           <div className="box">
             <Row>
             <Col span={12}> 
-              <p className={data.complete?'done':''}> {data.task} </p> 
+              <h3 className={data.complete?'done':''}> {data.task} </h3> 
             </Col>
             <Col span={12} align="end">
               <Link to={`/edit-task/${data.id}`}> <EditFilled style={{color:"yellow", marginRight:"1rem", fontSize: "16pt"}} /> </Link>
@@ -76,7 +89,7 @@ function Home() {
       </Col>
       <Col span={12} align="end">
         <Button type="primary" style={{width: "95%", backgroundColor: "red", border:"none"}} 
-        onClick={deleteAllTask}>Delete all task</Button>
+        >Delete all task</Button>
       </Col>
       </Row>
     </div>
