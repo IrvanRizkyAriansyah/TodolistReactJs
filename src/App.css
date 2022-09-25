@@ -11,7 +11,7 @@
   border-radius: 5px
 }
 
-.done .taskText {
+.container .done {
   text-decoration: line-through;
   opacity: 0.3;
   color: red
